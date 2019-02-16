@@ -3,8 +3,18 @@
 #include <stdlib.h>
 //#include <string.h>
 
+/*external function to trim the leading white spaces so that "   help" is same as "help" while executing  StrCmp*/
+char* removeLeadingWhiteSpaces(char *strg){
+    while(*strg==' '){
+	strg++;
+    }
+	return strg;
+}
+
 int StrCmp(char *strg1, char *strg2)
 {
+    strg1 = removeLeadingWhiteSpaces(strg1);// "    string" --> "string"
+    strg2 = removeLeadingWhiteSpaces(strg2);
     while( ( *strg1 != '\0' && *strg2 != '\0' ) && *strg1 == *strg2 )
     {
         strg1++;
