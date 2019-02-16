@@ -3,33 +3,52 @@
 #include <stdlib.h>
 //#include <string.h>
 
+int StrCmp(char *strg1, char *strg2)
+{
+    while( ( *strg1 != '\0' && *strg2 != '\0' ) && *strg1 == *strg2 )
+    {
+        strg1++;
+        strg2++;
+    }
+
+    if(*strg1 == *strg2)
+    {
+        return 0; // strings are identical
+    }
+
+    else
+    {
+        return *strg1 - *strg2;
+    }
+}
+
 char* StrStr(char *str, char *substr)
 {
-	  while (*str != '\0') 
+	  while (*str != '\0')
 	  {
 		    char *Begin = str;
 		    char *pattern = substr;
-		    
+
 		    // If first character of sub string match, check for whole string
-		    while ( (*str != '\0') && (*pattern != '\0') && (*str == *pattern) ) 
+		    while ( (*str != '\0') && (*pattern != '\0') && (*str == *pattern) )
                     {
 			      str++;
 			      pattern++;
 		    }
-		    // If complete sub string match, return starting address 
+		    // If complete sub string match, return starting address
 		    if (*pattern == '\0'){
                         return Begin;
                     }
-		    	  
-		    str = Begin + 1;	// Increament main string 
+
+		    str = Begin + 1;	// Increament main string
 	  }
 	  return NULL;
 }
 
 int main() {
-//Character array to hold the user input    
+//Character array to hold the user input
     while(1){
-    //-------------Get input from the user on what action to request from the server.------------           
+    //-------------Get input from the user on what action to request from the server.------------
         int Welcome_Done_State = 0;
         int Input_State = 0;
         while(Input_State==0){
@@ -42,9 +61,9 @@ int main() {
                 Welcome_Done_State = 1;
             }
             //grab user input and store into User_Input Char array
-            fgets(User_Input, 100, stdin);            
+            fgets(User_Input, 100, stdin);
             //Make sure the user input the correct options
-            if(StrStr(User_Input, "help") != NULL){ 
+            if( (StrCmp(User_Input, "help\n") == 0) ){
                 printf("Please enter one of the following commands: Allocate\n"
                        "                                            Free \n"
                        "                                            Display \n"
@@ -54,14 +73,14 @@ int main() {
                        "                                            Verify Pattern \n"
                        "                                            exit\n");
             }
-            else if(StrStr(User_Input, "exit") != NULL){
+            else if( (StrCmp(User_Input, "exit\n") == 0) ){
                 printf("Thank you!\n");
                 exit(0);
             }
             else {
                 printf("INVALID INPUT: Please enter a proper command or type 'help' for a list of commands:\n");
             }
-            
+
         }
     }
 }
