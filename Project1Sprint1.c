@@ -27,11 +27,11 @@ char* StrStr(char *str, char *substr)
 }
 
 int main() {
-//Character array to hold the user input
     while(1){
-    //-------------Get input from the user on what action to request from the server.------------
+    //-------------Get input from the user on what action to do.------------
         int Welcome_Done_State = 0;
-        int Input_State = 0;
+        //Character array to hold the user input
+	int Input_State = 0;
         while(Input_State==0){
             char User_Input[100] = {0};
             if (Welcome_Done_State == 1){
