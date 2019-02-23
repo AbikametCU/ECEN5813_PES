@@ -280,7 +280,7 @@ static inline void Free_Memory(uint32_t *MemoryPTR){
 }
 
 static inline void Display_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){  
-    printf("Data Located at Address:%p = %d\n", *MemoryPTR+USERDATA_PTR->Write_Offset_Bytes, *(*MemoryPTR + USERDATA_PTR->Write_Offset_Bytes));
+    printf("Data Located at Address:%p = %d\n", *MemoryPTR+USERDATA_PTR->Display_Offset_Bytes, *(*MemoryPTR + USERDATA_PTR->Display_Offset_Bytes));
 }
 
 static inline void Write_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){    
@@ -301,11 +301,10 @@ int main() {
         int Allocate_State = 0;
         int Write_State = 0;
         uint32_t *MemoryPTR;
+        //Structure to access the data the user input for each command
+        struct UserData USERDATA;
+        struct UserData *USERDATA_PTR = &USERDATA;
         while(Input_State==0){
-            //Structure to access the data the user input for each command
-            struct UserData USERDATA;
-            struct UserData *USERDATA_PTR = &USERDATA;
-            
             char User_Input[100] = {0};
             if (Welcome_Done_State == 1){
                 printf("\nPlease enter a command or type 'help' for a list of commands:");
