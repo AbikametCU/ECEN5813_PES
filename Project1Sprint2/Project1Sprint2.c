@@ -429,7 +429,12 @@ static inline void Display_Memory(uint32_t **MemoryPTR, struct UserData* USERDAT
 }
 
 static inline void Invert_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){  
+    clock_t invertStartTime=clock();
     *(*MemoryPTR+USERDATA_PTR->Invert_Offset_Bytes)= ~ *(*MemoryPTR+USERDATA_PTR->Invert_Offset_Bytes);
+    clock_t invertEndTime=clock();
+    double time_taken_to_invert = ((double)(invertEndTime-invertStartTime)*1000)/CLOCKS_PER_SEC;
+    printf("Inverted Data Located at Address:%p = %d\n", *MemoryPTR+USERDATA_PTR->Invert_Offset_Bytes, *(*MemoryPTR + USERDATA_PTR->Invert_Offset_Bytes ));
+    printf("Time taken to perform invert:%f ms\n",time_taken_to_invert);
 }
 
 static inline void Write_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){    
