@@ -71,6 +71,8 @@ struct UserData {
     //For the display Command
     int Display_Offset_Bytes;
     int Words_To_Display;
+    
+    int Words_To_Invert;
     int Invert_Offset_Bytes;
     
     uint32_t* GlobalPTR;
@@ -223,30 +225,12 @@ int Interpret_Invert_Input(char* User_Input, struct UserData *USERDATA_PTR){
         //Check if the address the user provided is within range
         if ( (UserAddress >= USERDATA_PTR->GlobalPTR) && (UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
             long int Offset = (UserAddress-(long int)USERDATA_PTR->GlobalPTR)/4;
-            USERDATA_PTR->Display_Offset_Bytes=Offset;            
+            USERDATA_PTR->Invert_Offset_Bytes=Offset;   
+            return INVERT;
         }
         else{
             printf("ERROR: Invalid address specified\n");
             return INVALID;
-        }
-        token = strtok(NULL, " ");
-        if (token != NULL){
-            int Words_To_Display = atoi(token);
-            //Ensure the user typed an integer
-            if (Words_To_Display == 0){
-                printf("ERROR: Please specify a nonzero integer to write to memory\n");
-                return INVALID;
-            }
-            else if( (Words_To_Display+USERDATA_PTR->Display_Offset_Bytes) > USERDATA_PTR->Bytes_To_Allocate ){
-                printf("ERROR: You cannot display words past the memory you allocated\n");
-                return INVALID;
-            }
-            USERDATA_PTR->Words_To_Display=Words_To_Display;            
-            return DISPLAY;
-        }
-        else{
-            USERDATA_PTR->Words_To_Display=0;
-            return DISPLAY;
         }
     }       
 }
@@ -311,7 +295,7 @@ int Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
         //Check if the address the user provided is within range
         if ( (UserAddress >= USERDATA_PTR->GlobalPTR) && (UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
             long int Offset = (UserAddress-(long int)USERDATA_PTR->GlobalPTR)/4;
-            USERDATA_PTR->Display_Offset_Bytes=Offset;            
+            USERDATA_PTR->Write_Offset_Bytes=Offset;            
         }
         else{
             printf("ERROR: Invalid address specified\n");
