@@ -461,10 +461,10 @@ int main() {
             }
             else if(ReturnVal == HELP){
                 printf("Please enter one of the following commands: Allocate Memory [Number of Bytes]\n"
-                       "                                            Free Memory\n"
-                       "                                            Display Memory [Memory Address as an integer starting from 0 or as a hex value]\n"
-                       "                                            Write Memory [Memory Address as an integer starting from 0 or as a hex value] [Value to Write]\n"
-                       "                                            Invert \n"
+                       "                                            Free Memory-Frees all allocated memory\n"
+                       "                                            Display Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer starting from 0 or as a hex value or offset if -o option was chosen] (optional number of memory words to write)\n"
+                       "                                            Write Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer starting from 0 or as a hex value or offset if -o option was chosen] [Value to Write]\n"
+                       "                                            Invert [Address to Invert Memory at]\n"
                        "                                            Write Pattern\n"
                        "                                            Verify Pattern \n"
                        "                                            exit\n");
