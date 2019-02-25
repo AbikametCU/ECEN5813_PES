@@ -54,6 +54,8 @@ char* StrStr(char *str, char *substr)
 #define FREE 3
 #define WRITE 4
 #define DISPLAY 5
+#define INVERT 6
+
 
 #define ON 1
 #define OFF 0
@@ -69,7 +71,7 @@ struct UserData {
     //For the display Command
     int Display_Offset_Bytes;
     int Words_To_Display;
-    int Invert_Bytes;
+    int Invert_Offset_Bytes;
     
     uint32_t* GlobalPTR;
     
@@ -133,6 +135,80 @@ int Interpret_Display_Input(char* User_Input, struct UserData *USERDATA_PTR){
         else{
             USERDATA_PTR->Words_To_Display=0;
             return DISPLAY;
+        }
+                
+    }
+    //If the user provided a hexidecimal address
+    else{
+        token[strlen(token)] = '\0';
+        if (token == NULL){
+            printf("ERROR:Please specify an address to write to\n");
+            return INVALID;
+        }
+        uint32_t UserAddress = (uint32_t)strtol(token, NULL, 16);
+        //Check if the address the user provided is within range
+        if ( ((uint32_t*)UserAddress >= USERDATA_PTR->GlobalPTR) && ((uint32_t*)UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
+            uint32_t Offset = (UserAddress-(uint32_t)USERDATA_PTR->GlobalPTR)/4;
+            USERDATA_PTR->Display_Offset_Bytes=Offset;            
+        }
+        else{
+            printf("ERROR: Invalid address specified\n");
+            return INVALID;
+        }
+        token = strtok(NULL, " ");
+        if (token != NULL){
+            int Words_To_Display = atoi(token);
+            //Ensure the user typed an integer
+            if (Words_To_Display == 0){
+                printf("ERROR: Please specify a nonzero integer to write to memory\n");
+                return INVALID;
+            }
+            else if( (Words_To_Display+USERDATA_PTR->Display_Offset_Bytes) > USERDATA_PTR->Bytes_To_Allocate ){
+                printf("ERROR: You cannot display words past the memory you allocated\n");
+                return INVALID;
+            }
+            USERDATA_PTR->Words_To_Display=Words_To_Display;            
+            return DISPLAY;
+        }
+        else{
+            USERDATA_PTR->Words_To_Display=0;
+            return DISPLAY;
+        }
+    }       
+}
+
+int Interpret_Invert_Input(char* User_Input, struct UserData *USERDATA_PTR){
+    char *token = strtok(User_Input, " "); 
+    if (StrCmp(token, "Invert") != 0){
+        return INVALID;
+    }
+    token = strtok(NULL, " ");
+    if (token == NULL){
+        printf("ERROR:Please specify an address to write to\n");
+        return INVALID;
+    }
+    //If the user specified to write an offset of memory 
+    if ( (StrCmp(token, "-o") == 0) ){
+        token = strtok(NULL, " ");
+        if (token == NULL){
+            printf("ERROR: Please specify a memory address offset and an integer to write to it\n");
+            return INVALID;
+        }
+        
+        //Check to see if the user input a character and that the offset is less than the number of bytes the user allocated
+        int Offset = atoi(token);
+        if(IsChar(token[0]) == 1){
+            printf("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+            return INVALID;
+        }
+        else if(Offset > USERDATA_PTR->Bytes_To_Allocate){
+            printf("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+            return INVALID;
+        }
+        else{
+            //Store the offset the user specified
+            USERDATA_PTR->Invert_Offset_Bytes=Offset;
+	    return INVERT;            
         }
                 
     }
@@ -313,6 +389,15 @@ int Interpret_User_Input(char* User_Input, struct UserData *USERDATA_PTR){
             return DISPLAY;
         }
     }
+    else if( StrStr(User_Input, "Invert") != NULL){
+        int InvertReturnVal = Interpret_Invert_Input(User_Input, USERDATA_PTR);
+        if (InvertReturnVal == INVALID){
+            return INVALID;
+        }
+        else if(InvertReturnVal == INVERT){
+            return INVERT;
+        }
+    }
     else {
         return INVALID;
     }  
@@ -341,6 +426,10 @@ static inline void Display_Memory(uint32_t **MemoryPTR, struct UserData* USERDAT
             printf("Data Located at Address:%p = %d\n", *MemoryPTR+(USERDATA_PTR->Display_Offset_Bytes+i), *(*MemoryPTR + (USERDATA_PTR->Display_Offset_Bytes + i) ));
         } 
     }       
+}
+
+static inline void Invert_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){  
+    *(*MemoryPTR+USERDATA_PTR->Invert_Offset_Bytes)= ~ *(*MemoryPTR+USERDATA_PTR->Invert_Offset_Bytes);
 }
 
 static inline void Write_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){    
@@ -428,6 +517,14 @@ int main() {
                }
                else{
                    Display_Memory(&MemoryPTR, USERDATA_PTR);
+               }
+            }
+	   else if(ReturnVal == INVERT){
+               if ( (Allocate_State == 0) || (Write_State == 0) ){
+                   printf("ERROR: You can't invert memory you haven't written or allocated");
+               }
+               else{
+                   Invert_Memory(&MemoryPTR, USERDATA_PTR);
                }
             }
         }

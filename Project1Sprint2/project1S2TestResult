@@ -1,0 +1,26 @@
+ECEN5813-PES Project 1:Welcome to the Interactive Memory Manipulation Program, Please type a command. (or type help for Info):Please enter one of the following commands: Allocate Memory [Number of Bytes]
+                                            Free Memory
+                                            Display Memory [Memory Address as an integer starting from 0 or as a hex value]
+                                            Write Memory [Memory Address as an integer starting from 0 or as a hex value] [Value to Write]
+                                            Invert 
+                                            Write Pattern
+                                            Verify Pattern 
+                                            exit
+
+Please enter a command or type 'help' for a list of commands:
+24 32-bit chunks of memory allocated successfully starting at location0x55ee706b2280
+MemoryPointer Address Int:0x55ee706b2280
+
+Please enter a command or type 'help' for a list of commands:Wrote 40 at Memory Location:0x55ee706b2284
+
+Please enter a command or type 'help' for a list of commands:Data Located at Address:0x55ee706b2284 = 40
+
+Please enter a command or type 'help' for a list of commands:
+Please enter a command or type 'help' for a list of commands:Data Located at Address:0x55ee706b2284 = -41
+
+Please enter a command or type 'help' for a list of commands:
+Please enter a command or type 'help' for a list of commands:Data Located at Address:0x55ee706b2284 = 40
+
+Please enter a command or type 'help' for a list of commands:INVALID INPUT: Please enter a proper command or type 'help' for a list of commands and usage:
+
+Please enter a command or type 'help' for a list of commands:Thank you!

@@ -1,0 +1,10 @@
+help
+Allocate Memory 24
+Write Memory -o 1 40
+Display Memory -o 1 1
+Invert -o 1 1
+Display Memory -o 1 1
+Invert -o 1 1
+Display Memory -o 1 1
+
+exit
