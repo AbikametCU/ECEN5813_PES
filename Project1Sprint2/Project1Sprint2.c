@@ -145,10 +145,10 @@ int Interpret_Display_Input(char* User_Input, struct UserData *USERDATA_PTR){
             printf("ERROR:Please specify an address to write to\n");
             return INVALID;
         }
-        uint32_t UserAddress = (uint32_t)strtol(token, NULL, 16);
+        long int UserAddress = strtol(token, NULL, 16);
         //Check if the address the user provided is within range
-        if ( ((uint32_t*)UserAddress >= USERDATA_PTR->GlobalPTR) && ((uint32_t*)UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
-            uint32_t Offset = (UserAddress-(uint32_t)USERDATA_PTR->GlobalPTR)/4;
+        if ( (UserAddress >= USERDATA_PTR->GlobalPTR) && (UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
+            long int Offset = (UserAddress-(long int)USERDATA_PTR->GlobalPTR)/4;
             USERDATA_PTR->Display_Offset_Bytes=Offset;            
         }
         else{
@@ -219,10 +219,10 @@ int Interpret_Invert_Input(char* User_Input, struct UserData *USERDATA_PTR){
             printf("ERROR:Please specify an address to write to\n");
             return INVALID;
         }
-        uint32_t UserAddress = (uint32_t)strtol(token, NULL, 16);
+        long int UserAddress = strtol(token, NULL, 16);
         //Check if the address the user provided is within range
-        if ( ((uint32_t*)UserAddress >= USERDATA_PTR->GlobalPTR) && ((uint32_t*)UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
-            uint32_t Offset = (UserAddress-(uint32_t)USERDATA_PTR->GlobalPTR)/4;
+        if ( (UserAddress >= USERDATA_PTR->GlobalPTR) && (UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
+            long int Offset = (UserAddress-(long int)USERDATA_PTR->GlobalPTR)/4;
             USERDATA_PTR->Display_Offset_Bytes=Offset;            
         }
         else{
@@ -307,12 +307,11 @@ int Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
             printf("ERROR:Please specify an address to write to\n");
             return INVALID;
         }
-        uint32_t UserAddress = (uint32_t)strtol(token, NULL, 16);
-        
-        //Check if the address the user provided is within range, if it is find the offset
-        if ( ((uint32_t*)UserAddress >= USERDATA_PTR->GlobalPTR) && ((uint32_t*)UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
-            uint32_t Offset = (UserAddress-(uint32_t)USERDATA_PTR->GlobalPTR)/4;
-            USERDATA_PTR->Write_Offset_Bytes = Offset;
+        long int UserAddress = strtol(token, NULL, 16);
+        //Check if the address the user provided is within range
+        if ( (UserAddress >= USERDATA_PTR->GlobalPTR) && (UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
+            long int Offset = (UserAddress-(long int)USERDATA_PTR->GlobalPTR)/4;
+            USERDATA_PTR->Display_Offset_Bytes=Offset;            
         }
         else{
             printf("ERROR: Invalid address specified\n");
@@ -535,4 +534,3 @@ int main() {
         }
     }
 }
-
