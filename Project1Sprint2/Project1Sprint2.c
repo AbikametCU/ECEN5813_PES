@@ -68,7 +68,7 @@ struct UserData {
     
     //For the display Command
     int Display_Offset_Bytes;
-    
+    int Words_To_Display;
     int Invert_Bytes;
     
     uint32_t* GlobalPTR;
@@ -89,6 +89,10 @@ int Interpret_Display_Input(char* User_Input, struct UserData *USERDATA_PTR){
     }
     token = strtok(NULL, " ");
     token = strtok(NULL, " ");
+    if (token == NULL){
+        printf("ERROR:Please specify an address to write to\n");
+        return INVALID;
+    }
     //If the user specified to write an offset of memory 
     if ( (StrCmp(token, "-o") == 0) ){
         token = strtok(NULL, " ");
@@ -109,25 +113,65 @@ int Interpret_Display_Input(char* User_Input, struct UserData *USERDATA_PTR){
         }
         else{
             //Store the offset the user specified
-            USERDATA_PTR->Display_Offset_Bytes=Offset;
+            USERDATA_PTR->Display_Offset_Bytes=Offset;            
+        }
+        token = strtok(NULL, " ");
+        if (token != NULL){
+            int Words_To_Display = atoi(token);
+            //Ensure the user typed an integer
+            if (Words_To_Display == 0){
+                printf("ERROR: Please specify a nonzero integer to write to memory\n");
+                return INVALID;
+            }
+            else if( (Words_To_Display+USERDATA_PTR->Display_Offset_Bytes) > USERDATA_PTR->Bytes_To_Allocate ){
+                printf("ERROR: You cannot display words past the memory you allocated\n");
+                return INVALID;
+            }
+            USERDATA_PTR->Words_To_Display=Words_To_Display;
             return DISPLAY;
         }
+        else{
+            USERDATA_PTR->Words_To_Display=0;
+            return DISPLAY;
+        }
+                
     }
     //If the user provided a hexidecimal address
     else{
         token[strlen(token)] = '\0';
-        
+        if (token == NULL){
+            printf("ERROR:Please specify an address to write to\n");
+            return INVALID;
+        }
         uint32_t UserAddress = (uint32_t)strtol(token, NULL, 16);
         //Check if the address the user provided is within range
         if ( ((uint32_t*)UserAddress >= USERDATA_PTR->GlobalPTR) && ((uint32_t*)UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
             uint32_t Offset = (UserAddress-(uint32_t)USERDATA_PTR->GlobalPTR)/4;
-            USERDATA_PTR->Display_Offset_Bytes=Offset;
-            return DISPLAY;
+            USERDATA_PTR->Display_Offset_Bytes=Offset;            
         }
         else{
             printf("ERROR: Invalid address specified\n");
             return INVALID;
-        }    
+        }
+        token = strtok(NULL, " ");
+        if (token != NULL){
+            int Words_To_Display = atoi(token);
+            //Ensure the user typed an integer
+            if (Words_To_Display == 0){
+                printf("ERROR: Please specify a nonzero integer to write to memory\n");
+                return INVALID;
+            }
+            else if( (Words_To_Display+USERDATA_PTR->Display_Offset_Bytes) > USERDATA_PTR->Bytes_To_Allocate ){
+                printf("ERROR: You cannot display words past the memory you allocated\n");
+                return INVALID;
+            }
+            USERDATA_PTR->Words_To_Display=Words_To_Display;            
+            return DISPLAY;
+        }
+        else{
+            USERDATA_PTR->Words_To_Display=0;
+            return DISPLAY;
+        }
     }       
 }
 
@@ -138,6 +182,10 @@ int Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
     }
     token = strtok(NULL, " ");
     token = strtok(NULL, " ");
+    if (token == NULL){
+            printf("ERROR:Please specify an address to write to\n");
+            return INVALID;
+        }
     //If the user specified to write an offset of memory 
     if ( (StrCmp(token, "-o") == 0) ){
         token = strtok(NULL, " ");
@@ -160,7 +208,7 @@ int Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
             //Store the offset the user specified
             USERDATA_PTR->Write_Offset_Bytes=Offset;
         }
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " ");        
         if (token == NULL){
             printf("ERROR:Please specify a number to write to memory\n");
             return INVALID;
@@ -179,9 +227,11 @@ int Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
     //If the user provided a hexidecimal address
     else{
         token[strlen(token)] = '\0';
-        
+        if (token == NULL){
+            printf("ERROR:Please specify an address to write to\n");
+            return INVALID;
+        }
         uint32_t UserAddress = (uint32_t)strtol(token, NULL, 16);
-        printf("UserAddress:%x\n", UserAddress);
         
         //Check if the address the user provided is within range, if it is find the offset
         if ( ((uint32_t*)UserAddress >= USERDATA_PTR->GlobalPTR) && ((uint32_t*)UserAddress <= (USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
@@ -193,8 +243,11 @@ int Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
             return INVALID;
         }
         token = strtok(NULL, " ");
-        int Bytes_To_Write = atoi(token);
-        
+        if (token == NULL){
+            printf("ERROR:Please specify a number to write to memory\n");
+            return INVALID;
+        }
+        int Bytes_To_Write = atoi(token);        
         //Ensure the user typed an integer
         if (Bytes_To_Write == 0){
             printf("ERROR: Please specify a nonzero integer to write to memory\n");
@@ -280,7 +333,14 @@ static inline void Free_Memory(uint32_t *MemoryPTR){
 }
 
 static inline void Display_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){  
-    printf("Data Located at Address:%p = %d\n", *MemoryPTR+USERDATA_PTR->Display_Offset_Bytes, *(*MemoryPTR + USERDATA_PTR->Display_Offset_Bytes));
+    if(USERDATA_PTR->Words_To_Display==0){
+        printf("Data Located at Address:%p = %d\n", *MemoryPTR+USERDATA_PTR->Display_Offset_Bytes, *(*MemoryPTR + USERDATA_PTR->Display_Offset_Bytes ));
+    }
+    else{
+        for(int i = 0; i < USERDATA_PTR->Words_To_Display; i++){
+            printf("Data Located at Address:%p = %d\n", *MemoryPTR+(USERDATA_PTR->Display_Offset_Bytes+i), *(*MemoryPTR + (USERDATA_PTR->Display_Offset_Bytes + i) ));
+        } 
+    }       
 }
 
 static inline void Write_Memory(uint32_t **MemoryPTR, struct UserData* USERDATA_PTR){    
