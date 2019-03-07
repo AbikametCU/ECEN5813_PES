@@ -22,7 +22,7 @@ typedef struct UserData {
     //For the write Patter command
     int Write_Pattern_Offset;
     int Seed_Value;
-    
+    long Seed_Time;
     uint32_t* GlobalPTR;
     
     //State Variables to ensure a user doesn't write/display to memory before allocated

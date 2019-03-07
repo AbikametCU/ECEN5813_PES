@@ -75,7 +75,7 @@ void Interpret_User_Input(char* User_Input, struct UserData *USERDATA_PTR){
                "                                            Display Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] (optional number of memory words to display)\n"
                "                                            Write Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [Value to Write]\n"
                "                                            Invert [Address to Invert Memory at]\n"
-               "                                            Write Pattern (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [seed value]\n"
+               "                                            Wpattern(optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [seed value]\n"
                "                                            Verify Pattern \n"
                "                                            Exit\n");
     return; 
@@ -96,13 +96,14 @@ int Handle_User_Input(char* User_Command, char* User_Input, struct FunctionLUT *
     return 0;
 }
 
+
 int main() {
 //Character array to hold the user input    
     while(1){
     //-------------Get input from the user on what action to request from the server.------------           
         int Welcome_Done_State = 0;
         int Input_State = 0;
-        
+//        USERDATA.
         //struct UserData USERDATA;
         USERDATA.Allocate_State=0;
         USERDATA.Write_State=0;

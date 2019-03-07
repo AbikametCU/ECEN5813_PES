@@ -2,7 +2,7 @@
 //#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <time.h> 
 #include <stdint.h>
 #include "Project1.h"
 
@@ -12,16 +12,23 @@ void my_srand(unsigned long seed) {
     my_rand_state = seed;
 }
 
-long my_rand() {
-    my_rand_state = (my_rand_state * 1103515245 + 12345) % 2147483648;
+long my_rand(struct UserData *USERDATA_PTR) {
+   
+    //Grab the currnt time for the seed value
+    time_t Seed_Time = time(0);
+    
+    USERDATA_PTR->Seed_Time = (long)Seed_Time;
+    printf("Time:%ld",USERDATA_PTR->Seed_Time);
+    
+    
+    my_rand_state = (my_rand_state * USERDATA_PTR->Seed_Time + 12345) % 2147483648;
     return my_rand_state;
 }
 
 void Write_Pattern(struct UserData* USERDATA_PTR){
     my_srand(USERDATA_PTR->Seed_Value);
     
-    int RandomValue=my_rand();
-    
+    int RandomValue=my_rand(USERDATA_PTR);
     *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Write_Pattern_Offset) = RandomValue;
     
     printf("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+USERDATA_PTR->Write_Pattern_Offset);

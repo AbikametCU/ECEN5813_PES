@@ -19,6 +19,10 @@ void Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
         return;
     }
     token = strtok(NULL, " ");
+    if ( StrCmp(token, "Memory") != 0){
+        printf("ERROR: Inccorect syntax of the Write Memory command, please type 'Help' for more info");
+        return;
+    }
     token = strtok(NULL, " ");
     if (token == NULL){
             printf("ERROR:Please specify an address to write to\n");
