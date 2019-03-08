@@ -7,12 +7,25 @@
 #include "Project1.h"
 
 void Invert_Memory(struct UserData* USERDATA_PTR){  
-    clock_t invertStartTime=clock();
-    *(USERDATA_PTR->GlobalPTR+USERDATA_PTR->Invert_Offset_Bytes)= ~ *(USERDATA_PTR->GlobalPTR+USERDATA_PTR->Invert_Offset_Bytes);
-    clock_t invertEndTime=clock();
-    double time_taken_to_invert = ((double)(invertEndTime-invertStartTime)*1000)/CLOCKS_PER_SEC;
-    printf("Inverted Data Located at Address:%p = %d\n", USERDATA_PTR->GlobalPTR+USERDATA_PTR->Invert_Offset_Bytes, *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Invert_Offset_Bytes ));
-    printf("Time taken to perform invert:%f ms\n",time_taken_to_invert);
+    if(USERDATA_PTR->Invert_Length ==0){
+        clock_t invertStartTime=clock();
+        *(USERDATA_PTR->GlobalPTR+USERDATA_PTR->Invert_Offset_Bytes)= ~ *(USERDATA_PTR->GlobalPTR+USERDATA_PTR->Invert_Offset_Bytes);
+        clock_t invertEndTime=clock();
+        printf("Inverted Data Located at Address:%p = %d\n", USERDATA_PTR->GlobalPTR+USERDATA_PTR->Invert_Offset_Bytes, *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Invert_Offset_Bytes ));
+        double time_taken_to_invert = ((double)(invertEndTime-invertStartTime)*1000)/CLOCKS_PER_SEC;
+        printf("Time taken to perform invert:%f ms\n",time_taken_to_invert);
+    }
+    else{
+        clock_t invertStartTime=clock();
+        for(int i = USERDATA_PTR->Invert_Offset_Bytes; i < (USERDATA_PTR->Invert_Offset_Bytes+USERDATA_PTR->Invert_Length); i++){
+            *(USERDATA_PTR->GlobalPTR+i)= ~ *(USERDATA_PTR->GlobalPTR+i);
+            printf("Inverted Data Located at Address:%p = %d\n", USERDATA_PTR->GlobalPTR+i, *(USERDATA_PTR->GlobalPTR + i ));
+        }
+        clock_t invertEndTime=clock();
+        double time_taken_to_invert = ((double)(invertEndTime-invertStartTime)*1000)/CLOCKS_PER_SEC;
+        printf("Time taken to perform invert:%f ms\n",time_taken_to_invert);
+    }
+    
 }
 
 void Interpret_Invert_Input(char* User_Input, struct UserData *USERDATA_PTR){
@@ -46,15 +59,26 @@ void Interpret_Invert_Input(char* User_Input, struct UserData *USERDATA_PTR){
         else{
             //Store the offset the user specified
             USERDATA_PTR->Invert_Offset_Bytes=Offset;
-	    if ( (USERDATA_PTR->Allocate_State == 0) || (USERDATA_PTR->Write_State == 0) ){
-                printf("ERROR: You can't invert memory you haven't written or allocated");
+        }
+        token = strtok(NULL, " ");
+        //If the user specified a length of addresses to write
+        if (token != NULL){
+            int length = atoi(token);
+            if(length == 0){
+                printf("ERROR: Please specify a nonzero length to invertn");
+                return;
             }
             else{
-                Invert_Memory(USERDATA_PTR);
+                USERDATA_PTR->Invert_Length = length;
             }
-            return;            
+        }        
+        if ( (USERDATA_PTR->Allocate_State == 0) || (USERDATA_PTR->Write_State == 0) ){
+            printf("ERROR: You can't invert memory you haven't written or allocated");
         }
-                
+        else{
+            Invert_Memory(USERDATA_PTR);
+        }
+        return;                           
     }
     //If the user provided a hexidecimal address
     else{
@@ -68,17 +92,29 @@ void Interpret_Invert_Input(char* User_Input, struct UserData *USERDATA_PTR){
         if ( (UserAddress >= (long int)USERDATA_PTR->GlobalPTR) && (UserAddress <= ((long int)USERDATA_PTR->GlobalPTR+USERDATA_PTR->Bytes_To_Allocate)) ){
             long int Offset = (UserAddress-(long int)USERDATA_PTR->GlobalPTR)/4;
             USERDATA_PTR->Invert_Offset_Bytes=Offset;   
-            if ( (USERDATA_PTR->Allocate_State == 0) || (USERDATA_PTR->Write_State == 0) ){
-                printf("ERROR: You can't invert memory you haven't written or allocated");
-            }
-            else{
-                Invert_Memory(USERDATA_PTR);
-            }
-            return;
         }
         else{
-            printf("ERROR: Invalid address specified\n");
+            printf("You cannot invert memory you have not allocated");
             return;
         }
+        token = strtok(NULL, " ");
+        //If the user specified a length of addresses to write
+        if (token != NULL){
+            int length = atoi(token);
+            if(length == 0){
+                printf("ERROR: Please specify a nonzero length to invert\n");
+                return;
+            }
+            else{
+                USERDATA_PTR->Invert_Length = length;
+            }
+        }        
+        if ( (USERDATA_PTR->Allocate_State == 0) || (USERDATA_PTR->Write_State == 0) ){
+            printf("ERROR: You can't invert memory you haven't written or allocated");
+        }
+        else{
+            Invert_Memory(USERDATA_PTR);
+        }
+        return;  
     }       
 }
