@@ -6,4 +6,8 @@ void Write_Pattern(struct UserData* USERDATA_PTR);
 
 void Interpret_WPattern_Input(char* User_Input, struct UserData *USERDATA_PTR);
 
+//void my_srand(unsigned long seed);
+
+uint32_t my_rand(struct UserData *USERDATA_PTR);
+
 #endif

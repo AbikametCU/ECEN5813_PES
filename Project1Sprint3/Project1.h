@@ -19,12 +19,20 @@ typedef struct UserData {
     int Words_To_Invert;
     int Invert_Offset_Bytes;
     
-    //For the write Patter command
+    //For the write Pattern command
     int Write_Pattern_Offset;
-    int Seed_Value;
-    long Seed_Time;
+    int Write_Seed_Value;
+    int Wpattern_Length;
+    
+    //For use in the verify pattern command
+    int Verify_Pattern_offset;
+    int Verify_Seed_Value;
+    int Verify_Length;
+    
+    uint32_t Seed_Time;
     uint32_t* GlobalPTR;
     
+        
     //State Variables to ensure a user doesn't write/display to memory before allocated
     int Allocate_State;
     int Write_State;
@@ -36,7 +44,7 @@ UserData USERDATA;
 
 #define INVALID 0
 
-#define NUMBER_OF_USER_SELECTABLE_COMMANDS 8
+#define NUMBER_OF_USER_SELECTABLE_COMMANDS 9
 
 #define ON 1
 #define OFF 0

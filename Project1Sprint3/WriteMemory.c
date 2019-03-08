@@ -42,8 +42,8 @@ void Interpret_Write_Input(char* User_Input, struct UserData *USERDATA_PTR){
             printf("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
             return;
         }
-        else if(Offset > USERDATA_PTR->Bytes_To_Allocate){
-            printf("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+        else if(Offset > USERDATA_PTR->Bytes_To_Allocate || Offset < 0){
+            printf("ERROR: Please specify a proper non-negative memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
             return;
         }
         else{

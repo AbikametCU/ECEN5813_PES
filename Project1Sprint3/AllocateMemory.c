@@ -25,7 +25,6 @@ void Allocate_Memory(struct UserData* USERDATA_PTR){
 }
 
 void Interpret_Allocate_Input(char* User_Input, struct UserData *USERDATA_PTR){
-    printf("Made it2\n");
     if( (StrStr(User_Input, "Allocate Memory") != NULL) ){
         char *token = strtok(User_Input, " "); 
         if ( StrCmp(token, "Allocate") != 0){

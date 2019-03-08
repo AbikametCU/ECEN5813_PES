@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "AllocateMemory.h"
 #include "DisplayMemory.h"
+#include "VerifyPattern.h"
 #include "WritePattern.h"
 #include "InvertMemory.h"
 #include "WriteMemory.h"
@@ -99,6 +100,10 @@ int Handle_User_Input(char* User_Command, char* User_Input, struct FunctionLUT *
 
 int main() {
 //Character array to hold the user input    
+   //Grab the currnt time 
+    time_t Seed_Time = time(0);
+    
+    USERDATA.Seed_Time = (uint32_t)Seed_Time;
     while(1){
     //-------------Get input from the user on what action to request from the server.------------           
         int Welcome_Done_State = 0;
@@ -117,15 +122,14 @@ int main() {
                                                     {.FunctionType = "Exit\n", .FunctionName = &Interpret_User_Input},
                                                     {.FunctionType = "Free", .FunctionName = &Interpret_Free_Input},
                                                     {.FunctionType = "Wpattern", .FunctionName = &Interpret_WPattern_Input},
+                                                    {.FunctionType = "Verify", .FunctionName = &Interpret_Verify_Input},
                                                 };
         
         while(Input_State==0){
+            USERDATA.Wpattern_Length = 0;
+            USERDATA.Verify_Length=0;
             char User_Input[100] = {0};
             char User_Input_CPY[100] = {0};
-//            for(int i = 1; i<6; i++){
-//                my_srand(i);
-//                printf("Random Number:%ld\n", my_rand());
-//            }
             if (Welcome_Done_State == 1){
                 printf("\nPlease enter a command or type 'Help' for a list of commands:");
             }
