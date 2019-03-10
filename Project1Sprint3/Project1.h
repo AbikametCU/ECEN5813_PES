@@ -18,6 +18,7 @@ typedef struct UserData {
     //For the Invert Command
     int Words_To_Invert;
     int Invert_Offset_Bytes;
+    int Invert_Length;
     
     //For the write Pattern command
     int Write_Pattern_Offset;

@@ -76,8 +76,8 @@ void Interpret_User_Input(char* User_Input, struct UserData *USERDATA_PTR){
                "                                            Display Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] (optional number of memory words to display)\n"
                "                                            Write Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [Value to Write]\n"
                "                                            Invert [Address to Invert Memory at]\n"
-               "                                            Wpattern(optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [seed value] (optional length of patterns to verify at multiple addresses)\n"
-               "                                            Verify Pattern (optional -o option to specify offset instead of hex) [Memory Address as an integer offset starting from 0 if -0 option was chose or as a hex address] [seed value] (optional length of patterns to verify at multiple addresses) \n"
+               "                                            Wpattern(optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [seed value]\n"
+               "                                            Verify Pattern \n"
                "                                            Exit\n");
     return; 
     }
@@ -128,6 +128,7 @@ int main() {
         while(Input_State==0){
             USERDATA.Wpattern_Length = 0;
             USERDATA.Verify_Length=0;
+            USERDATA.Invert_Length=0; 
             char User_Input[100] = {0};
             char User_Input_CPY[100] = {0};
             if (Welcome_Done_State == 1){
