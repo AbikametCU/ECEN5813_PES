@@ -1,6 +1,7 @@
 #ifndef PROJECT1_H_   /* Include guard */
 #define PROJECT1_H_
 
+#define LINUX_COMPILATION 1
 
 //Structure to access the data the user input for each command
 typedef struct UserData {

@@ -8,7 +8,11 @@
 
 void Display_Memory(struct UserData* USERDATA_PTR){  
     if(USERDATA_PTR->Words_To_Display==0){
-        printf("Data Located at Address:%p = %d\n", USERDATA_PTR->GlobalPTR + USERDATA_PTR->Display_Offset_Bytes, *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Display_Offset_Bytes));
+	#if LINUX_COMPILATION
+	printf("Data Located at Address:%p = %d\n", USERDATA_PTR->GlobalPTR + USERDATA_PTR->Display_Offset_Bytes, *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Display_Offset_Bytes));
+	#else
+	PRINTF("Data Located at Address:%p = %d\n", USERDATA_PTR->GlobalPTR + USERDATA_PTR->Display_Offset_Bytes, *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Display_Offset_Bytes));
+	#endif
     }
     else{
         for(int i = 0; i < USERDATA_PTR->Words_To_Display; i++){

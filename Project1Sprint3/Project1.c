@@ -13,6 +13,8 @@
 #include "FreeMemory.h"
 #include "Project1.h"
 
+
+
 int StrCmp(char *strg1, char *strg2)
 {
     while( ( *strg1 != '\0' && *strg2 != '\0' ) && *strg1 == *strg2 )
@@ -71,7 +73,8 @@ int IsChar(char c){
 
 void Interpret_User_Input(char* User_Input, struct UserData *USERDATA_PTR){
     if( (StrCmp(User_Input, "Help\n") == 0) ){ 
-        printf("Please enter one of the following commands: Allocate Memory [Number of Bytes]\n"
+	#if LINUX_COMPILATION
+	printf("Please enter one of the following commands: Allocate Memory [Number of Bytes]\n"
                "                                            Free Memory-Frees all allocated memory\n"
                "                                            Display Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] (optional number of memory words to display)\n"
                "                                            Write Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [Value to Write]\n"
@@ -79,10 +82,29 @@ void Interpret_User_Input(char* User_Input, struct UserData *USERDATA_PTR){
                "                                            Wpattern(optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [seed value]\n"
                "                                            Verify Pattern \n"
                "                                            Exit\n");
+    
+	#else
+	PRINTF("Please enter one of the following commands: Allocate Memory [Number of Bytes]\n"
+               "                                            Free Memory-Frees all allocated memory\n"
+               "                                            Display Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] (optional number of memory words to display)\n"
+               "                                            Write Memory (optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [Value to Write]\n"
+               "                                            Invert [Address to Invert Memory at]\n"
+               "                                            Wpattern(optional -o option to specify offset instead of hex address) [Memory Address as an integer offset starting from 0 if -o option was chosen or as a hex value] [seed value]\n"
+               "                                            Verify Pattern \n"
+               "                                            Exit\n");
+    #endif
     return; 
     }
+	
+	
+        
     else if( (StrCmp(User_Input, "Exit\n") == 0) ){
-        printf("Thank you!\n");
+	#if LINUX_COMPILATION
+	printf("Thank you!\n");
+	#else
+	PRINTF("Thank you!\n");
+	#endif
+        
         exit(0);
     }
 }
@@ -132,10 +154,18 @@ int main() {
             char User_Input[100] = {0};
             char User_Input_CPY[100] = {0};
             if (Welcome_Done_State == 1){
+		#if LINUX_COMPILATION
                 printf("\nPlease enter a command or type 'Help' for a list of commands:");
+		#else
+                PRINTF("\nPlease enter a command or type 'Help' for a list of commands:");
+		#endif		
             }
             if(Welcome_Done_State == 0){
+		#if LINUX_COMPILATION
                 printf("ECEN5813-PES Project 1:Welcome to the Interactive Memory Manipulation Program, Please type a command. (or type help for Info):");
+		#else
+		PRINTF("ECEN5813-PES Project 1:Welcome to the Interactive Memory Manipulation Program, Please type a command. (or type help for Info):");
+		#endif
                 Welcome_Done_State = 1;
             }
             //grab user input and store into User_Input Char array
@@ -145,7 +175,11 @@ int main() {
             char *User_Command_Choice = strtok(User_Input_CPY, " ");
             int ReturnVal = Handle_User_Input(User_Command_Choice, User_Input, FUNCTION_LUT_ARRAY, &USERDATA);
             if (ReturnVal == INVALID){
+		#if LINUX_COMPILATION
                 printf("INVALID INPUT: Please enter a proper command or type 'help' for a list of commands and usage:\n");
+		#else
+		printf("INVALID INPUT: Please enter a proper command or type 'help' for a list of commands and usage:\n");
+		#endif
                 continue;
             } 
         }

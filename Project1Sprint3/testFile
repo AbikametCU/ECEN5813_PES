@@ -1,0 +1,41 @@
+Help
+Allocate Memory 50000
+Write Memory -o 1 45
+Display Memory -o 1
+Invert -o 1 500
+Allocate Memory 50000
+Write Memory -o 1 45
+Invert -o 1 1000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 2000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 3000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 4000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 5000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 6000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 7000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 8000
+Allocate Memory 10000
+Write Memory -o 1 45
+Invert -o 1 9000
+Allocate Memory 1000
+Write Memory -o 1 45
+Invert -o 1 10000
+Allocate Memory 1000
+Write Memory -o 1 45
+WPattern -o 1 2
+VPattern -o 1 2
+Exit
+

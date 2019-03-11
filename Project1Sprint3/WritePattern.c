@@ -7,6 +7,10 @@
 #include "Project1.h"
 
 
+	#if LINUX_COMPILATION
+	#else
+	#endif
+
 uint32_t my_rand(struct UserData *USERDATA_PTR, int i) {
     
     uint32_t RandomVal = ( (USERDATA_PTR->Write_Seed_Value ^USERDATA_PTR->Seed_Time) * ((uint32_t)USERDATA_PTR->GlobalPTR + i) ) % 2147483648;
@@ -18,16 +22,27 @@ void Write_Pattern(struct UserData* USERDATA_PTR){
     if(USERDATA_PTR->Wpattern_Length == 0){
         uint32_t RandomValue=my_rand(USERDATA_PTR, USERDATA_PTR->Write_Pattern_Offset);
         *(USERDATA_PTR->GlobalPTR + USERDATA_PTR->Write_Pattern_Offset) = RandomValue;
-    
-        printf("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+USERDATA_PTR->Write_Pattern_Offset);
+	#if LINUX_COMPILATION
+	printf("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+USERDATA_PTR->Write_Pattern_Offset);
+	#else
+	PRINTF("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+USERDATA_PTR->Write_Pattern_Offset);
+	#endif    
+        
     }
     else{
-        printf("made it\n");
+	#if LINUX_COMPILATION
+	printf("made it\n");
+	#else
+	PRINTF("made it\n");
+	#endif
         for (int i = USERDATA_PTR->Write_Pattern_Offset; i<(USERDATA_PTR->Wpattern_Length + USERDATA_PTR->Write_Pattern_Offset); i++){
             uint32_t RandomValue=my_rand(USERDATA_PTR, i);
             *(USERDATA_PTR->GlobalPTR + i) = RandomValue;
-
-            printf("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+i);
+	#if LINUX_COMPILATION
+	printf("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+i);
+	#else
+	PRINTF("Wrote %d at Memory Location:%p\n", RandomValue, USERDATA_PTR->GlobalPTR+i);
+	#endif
         }   
     }
     
@@ -41,25 +56,41 @@ void Interpret_WPattern_Input(char* User_Input, struct UserData *USERDATA_PTR){
     }
     token = strtok(NULL, " ");
     if (token == NULL){
-            printf("ERROR:Please specify an address or offset of memory to write to\n");
+	#if LINUX_COMPILATION
+	printf("ERROR:Please specify an address or offset of memory to write to\n");
+	#else
+	PRINTF("ERROR:Please specify an address or offset of memory to write to\n");
+	#endif
             return;
         }
     //If the user specified to write an offset of memory 
     if ( (StrCmp(token, "-o") == 0) ){
         token = strtok(NULL, " ");
         if (token == NULL){
-            printf("ERROR: Please specify a memory address offset and an integer to write to it\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a memory address offset and an integer to write to it\n");
+	#else
+	PRINTF("ERROR: Please specify a memory address offset and an integer to write to it\n");
+	#endif
             return;
         }
         
         //Check to see if the user input a character and not a number offset and that the offset is less than the number of bytes the user allocated
         int Offset = atoi(token);
         if(IsChar(token[0]) == 1){
-            printf("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+	#else
+	PRINTF("ERROR: Please specify a proper memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+	#endif
             return;
         }
         else if(Offset > USERDATA_PTR->Bytes_To_Allocate || Offset < 0){
-            printf("ERROR: Please specify a proper non-negative memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a proper non-negative memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+	#else
+	PRINTF("ERROR: Please specify a proper non-negative memory address via an integer offset with 0 being the starting location up to %d\n", USERDATA_PTR->Bytes_To_Allocate);
+	#endif
             return;
         }
         else{
@@ -68,25 +99,41 @@ void Interpret_WPattern_Input(char* User_Input, struct UserData *USERDATA_PTR){
         }
         token = strtok(NULL, " ");        
         if (token == NULL){
-            printf("ERROR:Please specify a seed value to use to generate a number\n");
+	#if LINUX_COMPILATION
+	printf("ERROR:Please specify a seed value to use to generate a number\n");
+	#else
+	PRINTF("ERROR:Please specify a seed value to use to generate a number\n");
+	#endif
             return;
         }
         int Seed = atoi(token);
         //Ensure the user typed an integer
         if (Seed == 0){
-            printf("ERROR: Please specify a nonzero seed to generate a number\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a nonzero seed to generate a number\n");
+	#else
+	PRINTF("ERROR: Please specify a nonzero seed to generate a number\n");
+	#endif
             return;
         }
         USERDATA_PTR->Write_Seed_Value = Seed;
         if (USERDATA_PTR->Allocate_State == 0){
-            printf("ERROR: You can't write to memory you have not allocated\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: You can't write to memory you have not allocated\n");
+	#else
+	PRINTF("ERROR: You can't write to memory you have not allocated\n");
+	#endif
         }
         token = strtok(NULL, " ");
         //If the user specified a length of addresses to write
         if (token != NULL){
             int length = atoi(token);
             if(length == 0){
-                printf("ERROR: Please specify a nonzero length to write a pattern\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a nonzero length to write a pattern\n");
+	#else
+	PRINTF("ERROR: Please specify a nonzero length to write a pattern\n");
+	#endif
             }
             else{
                 USERDATA_PTR->Wpattern_Length = length;
@@ -100,7 +147,11 @@ void Interpret_WPattern_Input(char* User_Input, struct UserData *USERDATA_PTR){
     else{
         token[strlen(token)] = '\0';
         if (token == NULL){
-            printf("ERROR:Please specify an address to write to\n");
+	#if LINUX_COMPILATION
+	printf("ERROR:Please specify an address to write to\n");
+	#else
+	PRINTF("ERROR:Please specify an address to write to\n");
+	#endif
             return;
         }
         long int UserAddress = strtol(token, NULL, 16);
@@ -110,31 +161,57 @@ void Interpret_WPattern_Input(char* User_Input, struct UserData *USERDATA_PTR){
             USERDATA_PTR->Write_Pattern_Offset=Offset;            
         }
         else{
-            printf("ERROR: Invalid address specified\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: Invalid address specified\n");
+	#else
+	PRINTF("ERROR: Invalid address specified\n");
+	#endif
+
             return;
         }
         token = strtok(NULL, " ");
         if (token == NULL){
-            printf("ERROR:Please specify a seed to generate a number\n");
+	#if LINUX_COMPILATION
+	printf("ERROR:Please specify a seed to generate a number\n");
+	#else
+	PRINTF("ERROR:Please specify a seed to generate a number\n");
+	#endif
             return;
         }
          int Seed = atoi(token);
         //Ensure the user typed an integer
         if (Seed == 0){
-            printf("ERROR: Please specify a nonzero seed to generate a number\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a nonzero seed to generate a number\n");
+	#else
+	PRINTF("ERROR: Please specify a nonzero seed to generate a number\n");
+	#endif
             return;
         }
         USERDATA_PTR->Write_Seed_Value = Seed;
         if (USERDATA_PTR->Allocate_State == 0){
-            printf("ERROR: You can't write to memory you have not allocated\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: You can't write to memory you have not allocated\n");
+	#else
+	PRINTF("ERROR: You can't write to memory you have not allocated\n");
+	#endif
+            
         }
         token = strtok(NULL, " ");
         //If the user specified a length of addresses to write
         if (token != NULL){
-            printf("length:%s", token);
+	#if LINUX_COMPILATION
+	printf("length:%s", token);
+	#else
+	PRINTF("length:%s", token);
+	#endif
             int length = atoi(token);
             if(length == 0){
-                printf("ERROR: Please specify a nonzero length to write a pattern\n");
+	#if LINUX_COMPILATION
+	printf("ERROR: Please specify a nonzero length to write a pattern\n");
+	#else
+	PRINTF("ERROR: Please specify a nonzero length to write a pattern\n");
+	#endif
             }
             else{
                 USERDATA_PTR->Wpattern_Length = length;
