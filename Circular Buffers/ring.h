@@ -14,7 +14,7 @@ typedef struct
 	int Outi;
 } ring_t;
 
-ring_t *init( int length );
+ring_t *Ring_init( int length );
 int insert( ring_t *ring, char data );
 int remove_element( ring_t *ring, char *data );
 int entries( ring_t *ring );

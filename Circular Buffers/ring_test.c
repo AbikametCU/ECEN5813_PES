@@ -19,7 +19,7 @@
 ring_t *ring_buffer;
 int test_init(void)
 { 
-  	ring_buffer = init(30);
+  	ring_buffer = Ring_init(30);
 	return 0;
 }
 
