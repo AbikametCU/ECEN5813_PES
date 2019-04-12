@@ -44,6 +44,25 @@ void test_remove(void){
     printf("data:%c\n", data);
 }
 
+void test_fullBuffer(void){
+   ring_t *ring_buffer2;
+   ring_buffer2 = Ring_init(30);
+   int i=0;
+   for (i=0;i<ring_buffer2->Length;i++){
+		insert(ring_buffer2,i+97);
+	}//Buffer should be full now
+	 CU_ASSERT(-1 == insert(ring_buffer2, 'a'));	
+}
+
+void test_emptyBuffer(void){
+   ring_t *ring_buffer2;
+   ring_buffer2 = Ring_init(30);
+   char data;
+   CU_ASSERT(remove_element(ring_buffer2,&data)==-1);
+}
+
+
+
 int clean_suite(void){
 return 0;
 }
@@ -62,7 +81,7 @@ int main(void){
 	   return CU_get_error();
    }
      /* add the tests to the suite */
-   if ((NULL == CU_add_test(pSuite, "test of remove()", test_remove)) || (NULL == CU_add_test(pSuite, "test of insert()", test_insert)))
+   if ((NULL == CU_add_test(pSuite, "test of remove()", test_remove)) || (NULL == CU_add_test(pSuite, "test of insert()", test_insert)) || (NULL == CU_add_test(pSuite, "Testing full buffer Insert", test_fullBuffer)) || (NULL == CU_add_test(pSuite, "Testing empty  buffer remove",test_emptyBuffer)))
    {
       CU_cleanup_registry();
       return CU_get_error();
