@@ -31,7 +31,7 @@ int insert( ring_t *ring, char data ){
        // return -1;
    // }
     if(ring->Ini>=ring->Length ){
-//            printf("Buffer is full\n");
+            printf("Buffer is full\n");
     	ring->Ini = 0;
 		return -1;
     }
@@ -46,7 +46,7 @@ int insert( ring_t *ring, char data ){
 
 int remove_element( ring_t *ring, char *data ){
     if(ring->Ini == ring->Outi){
-//        printf("cannot remove an item from an empty buffer\n");
+        printf("cannot remove an item from an empty buffer\n");
         return -1;
     }
     else{
